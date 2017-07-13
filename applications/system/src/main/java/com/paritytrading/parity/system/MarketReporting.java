@@ -17,9 +17,9 @@ import java.nio.channels.DatagramChannel;
 
 class MarketReporting {
 
-    private PMR.Order  order;
-    private PMR.Cancel cancel;
-    private PMR.Trade  trade;
+    private PMR.OrderEntered orderEntered;
+    private PMR.Cancel       cancel;
+    private PMR.Trade        trade;
 
     private MoldUDP64Server transport;
 
@@ -32,9 +32,9 @@ class MarketReporting {
     private ByteBuffer buffer;
 
     private MarketReporting(MoldUDP64Server transport, MoldUDP64RequestServer requestTransport) {
-        this.order  = new PMR.Order();
-        this.cancel = new PMR.Cancel();
-        this.trade  = new PMR.Trade();
+        this.orderEntered = new PMR.OrderEntered();
+        this.cancel       = new PMR.Cancel();
+        this.trade        = new PMR.Trade();
 
         this.transport = transport;
 
@@ -82,16 +82,16 @@ class MarketReporting {
         }
     }
 
-    public void order(long username, long orderNumber, byte side, long instrument, long quantity, long price) {
-        order.timestamp   = timestamp();
-        order.username    = username;
-        order.orderNumber = orderNumber;
-        order.side        = side;
-        order.instrument  = instrument;
-        order.quantity    = quantity;
-        order.price       = price;
+    public void orderEntered(long username, long orderNumber, byte side, long instrument, long quantity, long price) {
+        orderEntered.timestamp   = timestamp();
+        orderEntered.username    = username;
+        orderEntered.orderNumber = orderNumber;
+        orderEntered.side        = side;
+        orderEntered.instrument  = instrument;
+        orderEntered.quantity    = quantity;
+        orderEntered.price       = price;
 
-        send(order);
+        send(orderEntered);
     }
 
     public void cancel(long username, long orderNumber, long canceledQuantity) {
