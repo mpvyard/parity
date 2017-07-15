@@ -170,7 +170,7 @@ class MatchingEngine {
                     release(handling);
             }
 
-            marketReporting.cancel(handling.getSession().getUsername(), orderNumber, canceledQuantity);
+            marketReporting.orderCanceled(orderNumber, canceledQuantity);
         }
 
     }

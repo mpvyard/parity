@@ -17,10 +17,10 @@ import java.nio.channels.DatagramChannel;
 
 class MarketReporting {
 
-    private PMR.OrderEntered orderEntered;
-    private PMR.OrderAdded   orderAdded;
-    private PMR.Cancel       cancel;
-    private PMR.Trade        trade;
+    private PMR.OrderEntered  orderEntered;
+    private PMR.OrderAdded    orderAdded;
+    private PMR.OrderCanceled orderCanceled;
+    private PMR.Trade         trade;
 
     private MoldUDP64Server transport;
 
@@ -33,10 +33,10 @@ class MarketReporting {
     private ByteBuffer buffer;
 
     private MarketReporting(MoldUDP64Server transport, MoldUDP64RequestServer requestTransport) {
-        this.orderEntered = new PMR.OrderEntered();
-        this.orderAdded   = new PMR.OrderAdded();
-        this.cancel       = new PMR.Cancel();
-        this.trade        = new PMR.Trade();
+        this.orderEntered  = new PMR.OrderEntered();
+        this.orderAdded    = new PMR.OrderAdded();
+        this.orderCanceled = new PMR.OrderCanceled();
+        this.trade         = new PMR.Trade();
 
         this.transport = transport;
 
@@ -103,13 +103,12 @@ class MarketReporting {
         send(orderAdded);
     }
 
-    public void cancel(long username, long orderNumber, long canceledQuantity) {
-        cancel.timestamp        = timestamp();
-        cancel.username         = username;
-        cancel.orderNumber      = orderNumber;
-        cancel.canceledQuantity = canceledQuantity;
+    public void orderCanceled(long orderNumber, long canceledQuantity) {
+        orderCanceled.timestamp        = timestamp();
+        orderCanceled.orderNumber      = orderNumber;
+        orderCanceled.canceledQuantity = canceledQuantity;
 
-        send(cancel);
+        send(orderCanceled);
     }
 
     public void trade(long matchNumber, long instrument, long quantity, long price, long buyer,
