@@ -1,10 +1,10 @@
 package com.paritytrading.parity.reporter;
 
-import com.paritytrading.foundation.ASCII;
-import com.paritytrading.parity.net.pmr.PMR;
+import static com.paritytrading.parity.reporter.Formats.*;
+
 import com.paritytrading.parity.util.Timestamps;
 
-class TSVFormat extends MarketReportListener {
+class TSVFormat implements TradeListener {
 
     private static final String HEADER = "" +
         "Timestamp\t" +
@@ -22,17 +22,13 @@ class TSVFormat extends MarketReportListener {
     }
 
     @Override
-    public void trade(PMR.Trade message) {
+    public void trade(Trade event) {
         printf("%s\t%d\t%s\t%d\t%.2f\t%s\t%d\t%s\t%d\n",
-                Timestamps.format(message.timestamp / NANOS_PER_MILLI),
-                message.matchNumber,
-                ASCII.unpackLong(message.instrument).trim(),
-                message.quantity,
-                message.price / PRICE_FACTOR,
-                ASCII.unpackLong(message.buyer).trim(),
-                message.buyOrderNumber,
-                ASCII.unpackLong(message.seller).trim(),
-                message.sellOrderNumber);
+                formatTimestamp(event.timestamp), event.matchNumber,
+                formatString(event.instrument), event.quantity,
+                formatPrice(event.price), formatString(event.buyer),
+                event.buyOrderNumber, formatString(event.seller),
+                event.sellOrderNumber);
     }
 
 }
